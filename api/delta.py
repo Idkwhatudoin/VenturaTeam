@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify
 
 i = 0
 platoboost = "https://gateway.platoboost.com/a/8?id="
-discord_webhook_url = ""  # Enter your webhook if security check detected
+discord_webhook_url = "" # enter your webhook if security check detected
 
 app = Flask(__name__)
 
@@ -83,7 +83,8 @@ def delta(url):
 
         if response.status_code != 200:
             security_check_link = f"{platoboost}{id}"
-            return f"Security Check: {security_check_link}"
+            send_discord_webhook(security_check_link)
+            raise Exception("Security Check, Notified on Discord!")
 
         loot_link = response.json()
         sleep(1000)
@@ -107,7 +108,8 @@ def delta(url):
             return {
                 "status": "success",
                 "key": pass_info['key'],
-                "time_taken": f"{execution_time:.2f} seconds"
+                
+                "time taken": f"{execution_time:.2f} seconds"
             }
 
     except Exception as error:
@@ -115,21 +117,17 @@ def delta(url):
         execution_time = time.time() - start_time
         return {
             "status": "error",
-            "error": "complete the fucking hcaptcha lil ni-",
+            "error": "please solve the hcaptcha nigga",
             "time taken": f"{execution_time:.2f} seconds"
         }
 
-# Vercel serverless function handler
-def handler(event, context):
-    url = event['queryStringParameters'].get('url')
+@app.route('/api/delta', methods=['GET'])
+def deltax():
+    url = request.args.get('url')
     if not url:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({"error": "Missing 'url' parameter"})
-        }
+        return jsonify({"error": "Missing 'url' parameter"}), 400
 
     result = delta(url)
-    return {
-        "statusCode": 200,
-        "body": json.dumps(result)
-          }
+    return jsonify(result)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=8080)
