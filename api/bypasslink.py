@@ -83,8 +83,7 @@ def delta(url):
 
         if response.status_code != 200:
             security_check_link = f"{platoboost}{id}"
-            send_discord_webhook(security_check_link)
-            raise Exception("Security Check, Notified on Discord!")
+            return f"Security Check: {security_check_link}"
 
         loot_link = response.json()
         sleep(1000)
