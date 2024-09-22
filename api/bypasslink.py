@@ -115,7 +115,7 @@ def delta(url):
         execution_time = time.time() - start_time
         return {
             "status": "error",
-            "error": "please solve the hcaptcha nigga",
+            "error": "complete the fucking hcaptcha lil ni-",
             "time taken": f"{execution_time:.2f} seconds"
         }
 
